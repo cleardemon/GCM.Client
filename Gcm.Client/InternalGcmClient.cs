@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Util;
 using Android.Content.PM;
 
 namespace Gcm.Client
 {
-	public class GcmClient
+	public static class GcmClient
 	{
 		const string BACKOFF_MS = "backoff_ms";
 		const string GSF_PACKAGE = "com.google.android.gsf";
@@ -98,7 +91,7 @@ namespace Gcm.Client
 			CheckReceiver(context, allowedReceivers, Constants.INTENT_FROM_GCM_MESSAGE);
 		}
 
-		private static void CheckReceiver(Context context, HashSet<string> allowedReceivers, string action)
+		static void CheckReceiver(Context context, ICollection<string> allowedReceivers, string action)
 		{
 			var pm = context.PackageManager;
 			var packageName = context.PackageName;

@@ -1,15 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Util;
 
 namespace Gcm.Client
 {
@@ -20,25 +12,29 @@ namespace Gcm.Client
 		static PowerManager.WakeLock sWakeLock;
 
 		static object LOCK = new object();
-		static int serviceId = 1;
+		static int serviceId;
+
+		static GcmServiceBase()
+		{
+			serviceId = 1;
+		}
 
         /// <summary>
         /// The GCM Sender Ids to use. Set by the constructor taking parameters but not by the one that doesn't. Be very careful changing this value, preferably only set it in your constructor and only once.
         /// </summary>
-		protected string[] SenderIds = new string[] {};
+		protected string[] SenderIds = {};
 
 		//int sCounter = 1;
-		Random sRandom = new Random();
+		readonly Random sRandom = new Random();
 
 		const int MAX_BACKOFF_MS = 3600000; //1 hour
 
-		string TOKEN = "";
+		const string TOKEN = "";
 		const string EXTRA_TOKEN = "token";
 
-		protected GcmServiceBase() : base() {}
+		protected GcmServiceBase() {}
 
-		public GcmServiceBase(params string[] senderIds)
-			: base("GCMIntentService-" + (serviceId++).ToString())
+		protected GcmServiceBase(params string[] senderIds) : base("GCMIntentService-" + (serviceId++))
 		{
 			SenderIds = senderIds;
 		}
@@ -66,7 +62,7 @@ namespace Gcm.Client
 		{
 			try
 			{
-				var context = this.ApplicationContext;
+				var context = ApplicationContext;
 				var action = intent.Action;
 
 				if (action.Equals(Constants.INTENT_FROM_GCM_REGISTRATION_CALLBACK))
@@ -171,7 +167,7 @@ namespace Gcm.Client
 			context.StartService(intent);
 		}
 
-		private void handleRegistration(Context context, Intent intent)
+		void handleRegistration(Context context, Intent intent)
 		{
 			var registrationId = intent.GetStringExtra(Constants.EXTRA_REGISTRATION_ID);
 			var error = intent.GetStringExtra(Constants.EXTRA_ERROR);
